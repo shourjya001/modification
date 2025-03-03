@@ -13,19 +13,17 @@ function fetchLEBasedonSGR() {
     }
 }
 
-function fetchSGRBasedonLE() {
+function fetchLEBasedonLE() {
     $searchString = $_REQUEST['searchString'];
     if ($searchString != '') {
-        // Query to find SGR codes mapped to an LE code
-        $OcQuery = "SELECT t.\"CODSPM1\" as id, s.\"NAMESPM\" as name
-                    FROM \"TFOLLOWDBE\" f 
-                    INNER JOIN \"TSPMDBE\" t ON f.\"CODFLW\" = t.\"CODRISKDPT\"
-                    INNER JOIN \"TSPMDBE\" s ON t.\"CODSPM1\" = s.\"CODSPM\"
-                    WHERE t.\"CODSPM\" = '".$searchString."' AND t.\"FLAG\" = 'Y' AND t.\"CODLEVEL\" = 'LE'
-                    ORDER BY t.\"CODSPM1\" ASC"; /* SCOPE IN ('BK', 'HF', 'SOV') */
+        $OcQuery = "SELECT \"CODSPM1\" as id, \"NAMESPM\" as name 
+                    from \"TCDTFILEDBE\" t INNER JOIN \"TSPMDBE\" t2 on t.\"CODSPM1\" = t2.\"CODSPM\"
+                    WHERE t.\"CODLEVEL\" = 'LE' and t.\"FLAG\" = 'Y' AND t.\"CODSPM\" = '".$searchString."'";
+        
         $OcResult = pg_query($OcQuery);
         $OcResultRow = pg_fetch_all($OcResult);
         echo json_encode($OcResultRow);
     }
+}
 }
 ?>
